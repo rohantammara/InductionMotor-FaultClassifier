@@ -11,8 +11,7 @@ from keras.callbacks import ModelCheckpoint
 - Use Power Spectrum to differentiate between Healthy and Faulty base frequency (50 Hz)
 - 0.9853
 - Classify at a single loading also
-- Use only 0, 25, 50 % loading (first 50%)
-- 
+- Use only 0, 25, 50 % loading (first 50%
 """
 def wavelet_transform(wave):
     wavelet = pywt.Wavelet('haar')
@@ -42,10 +41,10 @@ def base_classifier(input_shape):
     return net
 
 def main():
-    df = pd.concat([pd.read_csv('diff_i1_2.csv'), pd.read_csv('i3.csv'), pd.read_csv('y.csv')], axis=1)
+    df = pd.concat([pd.read_csv('data/i1.csv'), pd.read_csv('data/i2.csv'), pd.read_csv('data/i3.csv'), pd.read_csv('data/y.csv')], axis=1)
 
     y_data = df['y'].values
-    x_data = df['i3'].values
+    x_data = df.drop(['y'], axis=1).values
 
     # Constants
     M = 1259776
@@ -98,5 +97,5 @@ def main():
     clf.fit(X_train, Y_train, epochs=NUM_EPOCHS, batch_size=BATCH_SIZE, shuffle=True, callbacks=[savepoint], validation_data=(X_test, Y_test))
 
 if __name___ == "__main__"
-    # Start main
+    
     main()
