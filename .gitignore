@@ -1,7 +1,5 @@
-*.csv
-*.lvm
-*.zip
-*.xls
-*.pdf
-*.txt
+data
+Experimental Data
 recycle
+ref-docs
+zero.py
