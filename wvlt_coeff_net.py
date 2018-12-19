@@ -8,6 +8,7 @@ from keras.layers import Input, Dense, Dropout
 from keras.optimizers import Adam, SGD
 from keras.callbacks import ReduceLROnPlateau, ModelCheckpoint
 from keras.utils import to_categorical
+from subprocess import run
 
 ### Constants ###
 # Number of folds for k-fold cross validation
@@ -21,7 +22,7 @@ N = 900000/folds
 P = int(2880000/(W*4))
 R = int(720000/(W*4))
 # Number of epochs
-NUM_EPOCHS = 15
+NUM_EPOCHS = 50
 # Batch size
 BATCH_SIZE = 32
 
@@ -51,7 +52,13 @@ def prepare_data(k=5):
     del [df_1, df_2, df_3, df_h]
 
     x_train = df_train.values
+    noise_train = np.random.normal(0, 0.01, (2880000, 3))
+    x_train = x_train + noise_train
+
     x_test = df_test.values
+    noise_test = np.random.normal(0, 0.01, (720000, 3))
+    x_test = x_test + noise_test
+
     y_train = to_categorical(np.repeat([0, 1, 2, 3], P))
     y_test = to_categorical(np.repeat([0, 1, 2, 3], R))
 
@@ -123,7 +130,7 @@ if __name__ == "__main__":
     t0 = time.time()
 
     # Train
-    for i in range(folds):
+    for i in range(1):
         print('Fold ' + str(i+1) + ':')
 
         print('Preparing data')
@@ -134,13 +141,13 @@ if __name__ == "__main__":
         train(X, Y, x, y, fold = i+1)
         print('done')
 
-        if i == 4:
-            x_data = np.concatenate((X, x), axis=0)
-            y_data = np.concatenate((Y, y), axis=0)
-            final_clf = load_model("wavelet_model.hdf5")
-            scores = final_clf.evaluate(x_data, y_data, BATCH_SIZE)
-            print("Loss: ", scores[0])
-            print("Accuracy: ", scores[1])
+        #if i == 4:
+        x_data = np.concatenate((X, x), axis=0)
+        y_data = np.concatenate((Y, y), axis=0)
+        final_clf = load_model("wavelet_model.hdf5")
+        scores = final_clf.evaluate(x_data, y_data, BATCH_SIZE)
+        print("Loss: ", scores[0])
+        print("Accuracy: ", scores[1])
 
         del [X, Y, x, y]
 

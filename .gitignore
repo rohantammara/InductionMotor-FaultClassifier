@@ -6,3 +6,7 @@ ref-docs
 zero.py
 new-test-data
 wavelet_recon_net.py
+*.zip
+*.lvm
+*.pkl
+*.csv
